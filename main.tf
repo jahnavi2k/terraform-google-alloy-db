@@ -185,6 +185,7 @@ resource "google_alloydb_instance" "primary" {
   instance_id       = var.primary_instance.instance_id
   instance_type     = google_alloydb_cluster.default.cluster_type
   display_name      = var.primary_instance.display_name
+  project           = var.project_id
   database_flags    = var.primary_instance.database_flags
   labels            = var.primary_instance.labels
   annotations       = var.primary_instance.annotations
@@ -259,6 +260,7 @@ resource "google_alloydb_instance" "primary" {
 resource "google_alloydb_instance" "read_pool" {
   for_each      = local.read_pool_instance
   cluster       = google_alloydb_cluster.default.name
+  project       = var.project_id
   instance_id   = each.key
   instance_type = "READ_POOL"
   labels        = var.primary_instance.labels
