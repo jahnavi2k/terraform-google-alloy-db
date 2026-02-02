@@ -255,6 +255,22 @@ resource "google_alloydb_instance" "primary" {
     }
   }
 
+  dynamic "observability_config" {
+    for_each = lookup(var.primary_instance, "observability_config", null) != null ? ["observability_config"] : []
+
+    content {
+      enabled                       = try(var.primary_instance.observability_config.enabled, null)
+      preserve_comments             = try(var.primary_instance.observability_config.preserve_comments, null)
+      track_wait_events             = try(var.primary_instance.observability_config.track_wait_events, null)
+      track_wait_event_types        = try(var.primary_instance.observability_config.track_wait_event_types, null)
+      max_query_string_length       = try(var.primary_instance.observability_config.max_query_string_length, null)
+      record_application_tags       = try(var.primary_instance.observability_config.record_application_tags, null)
+      query_plans_per_minute        = try(var.primary_instance.observability_config.query_plans_per_minute, null)
+      track_active_queries          = try(var.primary_instance.observability_config.track_active_queries, null)
+      assistive_experiences_enabled = try(var.primary_instance.observability_config.assistive_experiences_enabled, null)
+    }
+  }
+
   lifecycle {
     ignore_changes = [instance_type]
   }
@@ -316,6 +332,22 @@ resource "google_alloydb_instance" "read_pool" {
       query_plans_per_minute  = try(each.value.query_insights_config.query_plans_per_minute, null)
     }
   }
+
+  dynamic "observability_config" {
+      for_each = lookup(each.value, "observability_config", null) != null ? ["observability_config"] : []
+
+      content {
+        enabled                       = try(each.value.observability_config.enabled, null)
+        preserve_comments             = try(each.value.observability_config.preserve_comments, null)
+        track_wait_events             = try(each.value.observability_config.track_wait_events, null)
+        track_wait_event_types        = try(each.value.observability_config.track_wait_event_types, null)
+        max_query_string_length       = try(each.value.observability_config.max_query_string_length, null)
+        record_application_tags       = try(each.value.observability_config.record_application_tags, null)
+        query_plans_per_minute        = try(each.value.observability_config.query_plans_per_minute, null)
+        track_active_queries          = try(each.value.observability_config.track_active_queries, null)
+        assistive_experiences_enabled = try(each.value.observability_config.assistive_experiences_enabled, null)
+      }
+    }
 
   dynamic "psc_instance_config" {
     for_each = var.psc_enabled ? ["psc_instance_config"] : []
